@@ -19,18 +19,31 @@ class Employee {
 	}
 
 	private void refreshAvailabilities() {
+		availabilities.sort((a1, a2) -> a1.startDate.getTime().compareTo(a2.startDate.getTime())); // Sort availabilities by start date
+
 		Calendar current = Calendar.getInstance(); // Get current date
 
 		for(int i = 0; i < availabilities.size() - 1; i++) {
-			if(availabilities.get(i + 1).startDate.before(current)) availabilities.remove(i); // If the next availability is in effect, delete this one
+			if(availabilities.get(i + 1).startDate.before(current) & availabilities.get(i + 1).approved) availabilities.remove(i); // If the next availability is in effect, delete this one
 			else break; // If the next availability is not in effect, this one is; stop the loop
 		}
 	}
 
-	public Availability getAvailability() {
+	Availability getAvailability() {
 		refreshAvailabilities(); // Remove old availabilities, placing the current one at index 0
 
 		return(availabilities.getFirst()); // Return index 0
+	}
+
+	private void refreshTimeOff() {
+		timeOff.sort((t1, t2) -> t1.endTime.getTime().compareTo(t2.endTime.getTime())); // Sort time off by end date
+
+		Calendar current = Calendar.getInstance(); // Get current date
+
+		for(int i = 0; i < timeOff.size(); i++) {
+			if(timeOff.get(i).endTime.before(current)) timeOff.remove(i); // If the time off has already ended, remove it
+			else break; //
+		}
 	}
 }
 
@@ -39,7 +52,7 @@ class Position {
 	byte leadership; // Leadership ability required to hold the position
 	byte aptitude = 0; // Aptitude in the position as determined by managers' votes
 	byte experience = 0; // Experience in the position as determined by number of times in the position
-	short competence() return aptitude + experience; // Total competence in the position as determined by the sum of aptitude and experience
+	int competence() { return aptitude + experience; } // Total competence in the position as determined by the sum of aptitude and experience
 
 	Position(String newName, byte newLeadership) {
 		name = newName;
@@ -96,12 +109,18 @@ class AvailabilityTime {
 	}
 }
 
-class Day {
-
-}
-
 class TimeOff {
+	Calendar startTime; // When the time off starts
+	Calendar endTime; // When the time off ends
+	boolean approved; // Has the time off been approved by management
+	boolean paid; // Is the time off paid
 
+	TimeOff(Calendar newStartTime, Calendar newEndTime, boolean newApproved, boolean newPaid) {
+		startTime = newStartTime;
+		endTime = newEndTime;
+		approved = newApproved;
+		paid = newPaid;
+	}
 }
 
 // Main Class

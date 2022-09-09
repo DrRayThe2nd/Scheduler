@@ -2,4 +2,4 @@
 
 This is a scheduler application written in Java.
 
-Version: 0.0.2
+Version: 0.0.3
